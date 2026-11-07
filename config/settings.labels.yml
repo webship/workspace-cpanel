@@ -1,0 +1,7 @@
+# Labels for core/config/plugin.cpanel.settings.yml, merged into the Settings page.
+api_tokens:
+  label: cPanel API tokens by user
+  info: 'A map of cPanel user → API token (cPanel → Security → Manage API Tokens), one per account the dashboard lists domains for. Example: {webshipco: XXXX}. Injected only into cPanel jobs, never printed.'
+ssh_key:
+  label: SSH key for the pulls
+  info: 'The private key the pulls and deploys use to reach the accounts over SSH (authorized in cPanel → Security → SSH Access). Default: ~/.ssh/id_ed25519.'

@@ -1,0 +1,73 @@
+{
+  "name": "@webship/workspace-cpanel",
+  "version": "1.0.0",
+  "description": "cPanel hosting for Webship Workspace: the CPANEL menu on every site row, the account's domains as live sites, get database and files over SSH, deploy with rsync, the error log, the cPanel console. A provider of @webship/workspace-hosting.",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "private": true,
+  "license": "ISC",
+  "repository": "github:webship/workspace-cpanel",
+  "files": [
+    "dist/src",
+    "commands",
+    "config",
+    "features",
+    "scripts",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build",
+    "test": "npm run build && node --test dist/tests/*.test.js",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "workspacePlugin": {
+    "name": "cpanel",
+    "label": "cPanel",
+    "settingsFile": "plugin.cpanel.settings.yml",
+    "settingsTemplate": "config/plugin.cpanel.settings.yml",
+    "labels": "config/settings.labels.yml",
+    "legacySettingsKey": "cpanel",
+    "typeActions": {
+      "cpanel": [
+        "sites"
+      ]
+    },
+    "commands": {
+      "types": [
+        "sites"
+      ],
+      "workspaces": [
+        "dev",
+        "test",
+        "demos",
+        "sandboxes",
+        "projects"
+      ],
+      "files": [
+        "commands/cmd-tools-cpanel.sh"
+      ]
+    },
+    "scripts": {
+      "functions": [
+        "scripts/functions/fun-cpanel.sh",
+        "scripts/functions/fun-cpanel-tool.sh"
+      ],
+      "args": [
+        "scripts/args/arg-cpanel.sh"
+      ],
+      "hostInstall": "scripts/host-install.sh"
+    },
+    "features": [
+      "features/cpanel.feature"
+    ]
+  },
+  "dependencies": {
+    "@webship/workspace-hosting": "github:webship/workspace-hosting#1.0.x"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@webship/workspace-plugin-api": "github:webship/workspace-plugin-api#1.0.x",
+    "typescript": "^5.9.0"
+  }
+}
