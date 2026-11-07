@@ -12,16 +12,25 @@ function cpanel_token_for() {
   if [ -n "${CPANEL_API_TOKENS:-}" ] ; then
     printf '%s' "${CPANEL_API_TOKENS}" | python3 -c 'import json,sys; print(json.load(sys.stdin).get(sys.argv[1],""))' "${user}" 2>/dev/null ;
   else
+    # Either `api_tokens: {user: token}` on one line or a nested map under `api_tokens:`.
     python3 - "${WORKSPACE_CONFIG}/plugin.cpanel.settings.yml" "${user}" <<'PY' 2>/dev/null
 import re,sys,io
 s=io.open(sys.argv[1],encoding='utf-8').read()
-m=re.search(r'^api_tokens:\s*(\{.*\})\s*$', s, re.M)
+want=sys.argv[2]
+m=re.search(r'^api_tokens:[ \t]*(\{.*\})[ \t]*$', s, re.M)
 if m:
-    body=m.group(1).strip('{}')
-    for pair in body.split(','):
+    for pair in m.group(1).strip('{}').split(','):
         if ':' in pair:
             k,v=pair.split(':',1)
-            if k.strip().strip('"\'')==sys.argv[2]: print(v.strip().strip('"\'')); break
+            if k.strip().strip('"\'')==want: print(v.strip().strip('"\'')); break
+else:
+    on=False
+    for line in s.split('\n'):
+        if re.match(r'^api_tokens:\s*$', line): on=True; continue
+        if on:
+            if line and not line.startswith(' '): break
+            mm=re.match(r'^\s+([^#\s:]+):\s*(.*?)\s*$', line)
+            if mm and mm.group(1)==want: print(mm.group(2).strip('"\'')); break
 PY
   fi
 }
