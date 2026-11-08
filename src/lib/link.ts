@@ -5,7 +5,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import type { HostingLink } from '@webship/workspace-hosting';
+import type { HostingLink } from '@webship.co/workspace-hosting';
 
 export interface cPanelLink extends HostingLink {
   /** Every key of the link file, for the provider's own needs (region, resource group, host…). */

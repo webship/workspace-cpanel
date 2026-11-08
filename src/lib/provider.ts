@@ -6,9 +6,9 @@
  * deploy and the log go over SSH through cmd-tools-cpanel.sh in a screen session.
  */
 
-import type { PluginApi, PluginLib } from '@webship/workspace-plugin-api';
-import { configured } from '@webship/workspace-hosting';
-import type { EnvInfo, EnvRow, HostingLink, HostingProvider } from '@webship/workspace-hosting';
+import type { PluginApi, PluginLib } from '@webship.co/workspace-plugin-api';
+import { configured } from '@webship.co/workspace-hosting';
+import type { EnvInfo, EnvRow, HostingLink, HostingProvider } from '@webship.co/workspace-hosting';
 
 import { cpanelLinkOf } from './link';
 

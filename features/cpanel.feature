@@ -17,4 +17,4 @@ Feature: The cPanel plugin on a project row
   Scenario: The plugin is listed on the Plugins page
     Given I am on "/settings/plugins"
      Then I should see "cPanel"
-      And I should see "@webship/workspace-cpanel"
+      And I should see "@webship.co/workspace-cpanel"

@@ -1,9 +1,9 @@
-# @webship/workspace-cpanel
+# @webship.co/workspace-cpanel
 
 cPanel for the [Webship Workspace](https://github.com/webship/workspace) dashboard: the **CPANEL**
 menu on every site row, a live-site chip on the project card, "Link to cPanel" when a new folder is
 made, and the `cmd-tools-cpanel.sh` command in every site workspace. A provider of
-[`@webship/workspace-hosting`](https://github.com/webship/workspace-hosting), which draws the menu,
+[`@webship.co/workspace-hosting`](https://github.com/webship/workspace-hosting), which draws the menu,
 the environments modal, the get-database-and-files flow and the New-folder section for every host.
 
 cPanel has no CLI of its own, so the dashboard talks to the UAPI over HTTPS (port 2083) with an API token per account, and the pulls, the deploy and the log go over SSH (`ssh`, `rsync`, `drush sql:dump` in the remote docroot). The link is `user@host:/home/user/public_html`; the environments are the account's domains, each a live site.
