@@ -26,6 +26,23 @@
   "workspacePlugin": {
     "name": "cpanel",
     "label": "cPanel",
+    "needs": {
+      "plugins": [
+        [
+          "dev",
+          "test",
+          "demos",
+          "sandboxes",
+          "projects"
+        ]
+      ],
+      "commands": [
+        "ssh",
+        "rsync",
+        "curl",
+        "python3"
+      ]
+    },
     "settingsFile": "plugin.cpanel.settings.yml",
     "settingsTemplate": "config/plugin.cpanel.settings.yml",
     "labels": "config/settings.labels.yml",
