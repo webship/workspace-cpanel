@@ -18,6 +18,12 @@ import { cpanelProvider } from './lib/provider';
 export { cpanelProvider };
 export { cpanelLinkOf } from './lib/link';
 
+/** The AI items the installer places: agents in ai-agents/, skills in ai-skills/, commands in ai-commands/, prompts in ai-prompts/. */
+export const AGENTS: string[] = ['cpanel-deployer'];
+export const SKILLS: string[] = ['cpanel-hosting'];
+export const AI_COMMANDS: string[] = ['cpanel-status'];
+export const PROMPTS: string[] = ['cpanel-test-then-deploy'];
+
 export function register(api: PluginApi): void {
   registerHosting(api, cpanelProvider(api));
 }
