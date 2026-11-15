@@ -13,7 +13,8 @@ const manifest = JSON.parse(fs.readFileSync(path.join(PKG, 'package.json'), 'utf
 const walk = (dir: string): string[] => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]));
 
 test("the manifest says what the plugin needs: the plugins and the commands it cannot work without, and what a part of it uses", () => {
-  assert.deepStrictEqual(manifest.needs, {'plugins': [['dev', 'test', 'demos', 'sandboxes', 'projects']], 'commands': ['ssh', 'rsync', 'curl', 'python3']});
+  assert.deepStrictEqual(manifest.needs, {'plugins': [['dev', 'test', 'demos', 'sandboxes', 'projects'], 'ai-agents', 'ai-skills', 'ai-commands', 'ai-prompts'], 'commands': ['ssh', 'rsync', 'curl', 'python3']});
+  for (const kind of Object.keys(manifest.ai)) assert.ok(manifest.ai[kind].length > 0, `it ships ${kind}, which is why it needs the folder they are placed in`);
   assert.deepStrictEqual(manifest.suggests, undefined);
   assert.deepStrictEqual(manifest.needs.plugins[0], manifest.commands.workspaces, 'the alternatives are the folders the command goes to');
   const sources = ['commands', 'scripts', 'src'].flatMap((d) => (fs.existsSync(path.join(PKG, d)) ? walk(path.join(PKG, d)) : [])).map((f) => fs.readFileSync(f, 'utf8')).join('\n');
