@@ -6,6 +6,7 @@ Get the site <project> ready to deploy to cPanel, and give me the deploy line
 # ~/workspace/<folder> · container-based (DDEV by default) · <folder> is the sites folder of <project>
 # do not deploy: the deploy asks for a confirmation in a terminal and that is mine to give
 # never print a token or a key; link nothing, pull nothing
+# a feature to write or a run to read: the book Automated Functional Testing Recipes first (its README.md, then the matching chapter), from .claude/automated-functional-testing-recipes/ in the project, ~/.claude/automated-functional-testing-recipes/ or https://github.com/webship/webship-js-ai-agent/tree/2.0.x/automated-functional-testing-recipes
 
 1. cd ~/workspace/<folder> ; bash cmd-tools-cpanel.sh <project>
    stop if it is not linked, and show me the line it prints for linking
