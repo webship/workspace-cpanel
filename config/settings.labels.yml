@@ -5,3 +5,6 @@ api_tokens:
 ssh_key:
   label: SSH key for the pulls
   info: 'The private key the pulls and deploys use to reach the accounts over SSH (authorized in cPanel → Security → SSH Access). Default: ~/.ssh/id_ed25519.'
+api_tokens.CHANGE_ME_USER:
+  label: API token of the cPanel user CHANGE_ME_USER (the placeholder)
+  info: One line per cPanel account under api_tokens, its user then its API token. Rename CHANGE_ME_USER to the account's user in the Raw YAML tab (this form changes values, not names), and put its token here.

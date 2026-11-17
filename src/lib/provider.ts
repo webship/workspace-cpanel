@@ -70,7 +70,7 @@ export function cpanelProvider(api: PluginApi): HostingProvider {
     },
     folder: {
       idPattern: /^[a-z0-9_.-]+@[a-z0-9.-]+:\/.+$/i,
-      idPlaceholder: 'webshipco@server.example.com:/home/webshipco/public_html',
+      idPlaceholder: 'user@server.example.com:/home/user/public_html',
       idHelp: 'A cPanel link is user@host:/remote/docroot — the account user, the server, and the site\'s document root on it.',
     },
     menuNote: 'The pulls, the deploy and the log go over SSH with the key in the settings; the API token only lists domains',
