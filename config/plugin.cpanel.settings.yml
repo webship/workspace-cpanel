@@ -1,9 +1,9 @@
 # cPanel — core/config/plugin.cpanel.settings.yml
 #
 # How the dashboard reaches cPanel accounts: the UAPI over HTTPS with an API token (cPanel → Security → Manage API Tokens), one token per account. Which account a project belongs to is in its link (host and user); the token for that account is looked up here by user.
-# A map of cPanel user → API token (cPanel → Security → Manage API Tokens), one per account the dashboard lists domains for. Example: {webshipco: XXXX}. Injected only into cPanel jobs, never printed.
+# A map of cPanel user → API token (cPanel → Security → Manage API Tokens), one per account the dashboard lists domains for. Example: {example-user: XXXX}. Injected only into cPanel jobs, never printed.
 api_tokens:
-  # webshipco: CHANGE_ME
+  # One line per cPanel account: its user, then its API token. Rename CHANGE_ME_USER to the account's user in the Raw YAML tab, and put its token in place of CHANGE_ME.
   CHANGE_ME_USER: CHANGE_ME
 # The private key the pulls and deploys use to reach the accounts over SSH (authorized in cPanel → Security → SSH Access). Default: ~/.ssh/id_ed25519.
 ssh_key: ~/.ssh/id_ed25519
