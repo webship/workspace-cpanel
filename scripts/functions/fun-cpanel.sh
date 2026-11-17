@@ -40,10 +40,28 @@ function cpanel_ssh_key() {
   printf '%s' "${k/#\~/${HOME}}";
 }
 
+# The account's API token is what the UAPI calls need (the domains: the status, --environments,
+# --select); SSH (the pulls, the deploy, the log) does not. An empty value or CHANGE_ME is no token.
+function ensure_cpanel_token() {
+  local user token;
+  user="$(cpanel_link_get "$1" user)";
+  token="$(cpanel_token_for "${user}")";
+  if [ -z "${token}" ] || [ "${token}" == 'CHANGE_ME' ] ; then
+    echo "No API token for cPanel user ${user}: add ${user}: <token> under api_tokens in core/config/plugin.cpanel.settings.yml (cPanel → Security → Manage API Tokens)." ;
+    return 1 ;
+  fi
+  return 0 ;
+}
+
 function ensure_cpanel() {
   for tool in ssh rsync curl python3 ; do
     command -v "${tool}" > /dev/null 2>&1 || { echo "${tool} is not installed, and the cPanel tool needs it."; return 1; } ;
   done
+  # --environments and --select read the account's domains through the UAPI: without the token they
+  # can only fail, and --select would blame the domain it was given.
+  if [ "${ENVIRONMENTS:-no}" == 'yes' ] || [ ! "${SELECT:-_none_}" == '_none_' ] ; then
+    ensure_cpanel_token "${WORKSPACE_ROOT}/${doc_name}/${PROJECT_NAME}" || return 1 ;
+  fi
   return 0 ;
 }
 
@@ -65,9 +83,9 @@ function cpanel_do_link() {
 
 function cpanel_uapi() {
   local project_path="$1" call="$2" user host token;
+  ensure_cpanel_token "${project_path}" >&2 || return 1 ;
   user="$(cpanel_link_get "${project_path}" user)"; host="$(cpanel_link_get "${project_path}" host)";
   token="$(cpanel_token_for "${user}")";
-  [ -z "${token}" ] && { echo "No API token for cPanel user ${user} in plugin.cpanel.settings.yml (api_tokens)." >&2; return 1; } ;
   curl -sS -k -m 30 -H "Authorization: cpanel ${user}:${token}" "https://${host}:2083/execute/${call}" ;
 }
 
@@ -85,7 +103,8 @@ d=json.load(sys.stdin).get("data",{})
 print("  %-40s %s" % (d.get("main_domain",""), "main   https://"+d.get("main_domain","")))
 for x in d.get("addon_domains",[]): print("  %-40s %s" % (x, "addon  https://"+x))
 for x in d.get("sub_domains",[]): print("  %-40s %s" % (x, "sub    https://"+x))
-for x in d.get("parked_domains",[]): print("  %-40s %s" % (x, "alias"))' || return 1 ;
+for x in d.get("parked_domains",[]): print("  %-40s %s" % (x, "alias"))' 2>/dev/null \
+    || { echo "  (could not list the domains — check the API token and that https://$(cpanel_link_get "${project_path}" host):2083 answers)"; return 1; } ;
   cpanel_uapi "${project_path}" Quota/get_quota_info 2>/dev/null | python3 -c 'import json,sys
 d=json.load(sys.stdin).get("data",{})
 print("  disk: %s MB of %s MB" % (d.get("megabytes_used","?"), d.get("megabyte_limit","?")))' 2>/dev/null ;
@@ -157,15 +176,23 @@ function cpanel_do_logs() {
 }
 
 function cpanel_status() {
-  local project_path="$1" acct="$2";
+  local project_path="$1" acct="$2" missing rc=0;
   if [ -z "${acct}" ] ; then
     echo "    (the link is user@host:/remote/docroot)";
     return 0 ;
   fi
   echo "    remote:  $(cpanel_link_get "${project_path}" remote)";
   echo "";
-  cpanel_do_environments "${project_path}" ;
+  # The domains come from the UAPI: without the tools or the account's API token, say once what is
+  # missing and fail. The link, the remote and the console are known here and still show.
+  if missing="$(ensure_cpanel && ensure_cpanel_token "${project_path}")" ; then
+    cpanel_do_environments "${project_path}" || rc=1 ;
+  else
+    [ -n "${missing}" ] && sed 's/^/  /' <<< "${missing}" ;
+    rc=1 ;
+  fi
   echo "";
   echo "  Console: https://$(cpanel_link_get "${project_path}" host):2083/";
   echo "  Data: --pull-db and --pull-files bring the site down into DDEV over SSH; --push deploys with rsync.";
+  return ${rc} ;
 }

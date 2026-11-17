@@ -11,7 +11,7 @@
 #   cpanel_do_push <project_path> <id> <env>   deploy
 #   cpanel_do_logs <project_path> <id> <env>
 #   cpanel_do_activities <project_path> <id>
-#   cpanel_status <project_path> <id>          the closing status block
+#   cpanel_status <project_path> <id>          the closing status block; fails when the provider cannot be reached
 
 CPANEL_LINK_FILE=".cpanel/workspace.yml";
 
@@ -152,7 +152,9 @@ function cpanel_project_tool() {
     cpanel_do_activities "${project_path}" "${linked_id}" || true ;
   fi
 
-  # Default (and after any verb): status.
+  # Default (and after any verb): status. The local part always shows; when the provider cannot be
+  # reached (no CLI, no login, no token), cpanel_status says what is missing and the run fails.
+  local status_rc=0;
   echo "";
   echo "*---------------------------------------------------------------------*";
   echo "  ${doc_name}/${PROJECT_NAME} on cPanel";
@@ -165,9 +167,10 @@ function cpanel_project_tool() {
     local selected;
     selected="$(cpanel_selected_env "${project_path}")";
     echo "    env:     ${selected:-none selected — --environments then --select <name>}";
-    cpanel_status "${project_path}" "${linked_id}" ;
+    cpanel_status "${project_path}" "${linked_id}" || status_rc=1 ;
   fi
   echo "*---------------------------------------------------------------------*";
 
   cd "${WORKSPACE_ROOT}/${doc_name}";
+  return ${status_rc} ;
 }
